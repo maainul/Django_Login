@@ -164,3 +164,87 @@ So we can replace '/' with home at the bottom of the settings.py file:
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 ```
+
+# Django_Login Part -2(Signup Page)
+## 13. Users app
+```
+    Since we’re making our own view and url for registration, we need to create a dedicated app. Let’s call it accounts.
+
+    (accounts) ➜  src python manage.py startapp accounts
+    Make sure to add the new app to the INSTALLED_APPS setting in our my_project/settings.py file:
+
+    # my_project/settings.py
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'accounts.apps.AccountsConfig', # new
+]
+```
+## 14. Edit urls
+```
+
+    # my_project/urls.py
+    from django.contrib import admin
+    from django.urls import path, include
+    from django.views.generic.base import TemplateView
+
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('accounts/', include('accounts.urls')), # new
+        path('accounts/', include('django.contrib.auth.urls')),
+        path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    ]
+```
+## 15.Create urls.py in account directory
+```
+(accounts) ➜  src touch accounts/urls.py
+```
+```
+
+# accounts/urls.py
+from django.urls import path
+
+from . import views
+
+
+urlpatterns = [
+    path('signup/', views.SignUp.as_view(), name='signup'),
+]
+
+```
+## 16.EDit views.py
+```
+    # accounts/views.py
+    from django.contrib.auth.forms import UserCreationForm
+    from django.urls import reverse_lazy
+    from django.views import generic
+
+
+    class SignUp(generic.CreateView):
+        form_class = UserCreationForm
+        success_url = reverse_lazy('login')
+        template_name = 'signup.html'
+    ```
+## 17.Create Signup
+
+```
+(accounts) ➜  src touch templates/signup.html
+
+    <!-- templates/signup.html -->
+    {% extends 'base.html' %}
+
+    {% block title %}Sign Up{% endblock %}
+
+    {% block content %}
+      <h2>Sign up</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign up</button>
+      </form>
+    {% endblock %}
+```
