@@ -248,3 +248,33 @@ urlpatterns = [
       </form>
     {% endblock %}
 ```
+# Django_Login Part -3(PasswordReset)
+## 18.Add code on setting.py
+```
+    # my_project/settings.py
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+```
+## 19.Password Reset Form
+```
+(accounts) ➜  src touch templates/registration/password_reset_form.html
+
+
+<!-- templates/registration/password_reset_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Forgot Your Password?{% endblock %}
+
+{% block content %}
+  <h1>Forgot your password?</h1>
+  <p>Enter your email address below, and we'll email instructions for setting a new one.</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Send me instructions!">
+  </form>
+</div>
+{% endblock %}
+```
